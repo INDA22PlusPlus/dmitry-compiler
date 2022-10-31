@@ -91,7 +91,32 @@ class Lexer {
 }
 
 class Parser {
+    fun parse(tokensInRows: MutableList<MutableList<Token>>): AST {
+        val ast = AST(mutableListOf())
+        val tokenIterator = tokensInRows.iterator()
+        while (tokenIterator.hasNext()) {
+            val nextRow = tokenIterator.next()
+//            println(nextRow)
+            when (nextRow.elementAt(0).toString()) {
+                "if" -> {}
+                "elif" -> {}
+                "else" -> {}
+                "when" -> {}
+                else -> {
+                    if (nextRow.elementAt(1).toString() == "=" && nextRow.size >= 3) {
 
+                        ast.addCodeBlock(Assignment(
+                            nextRow.elementAt(0).toString(),
+                            Expression.getExpressionFromTokens(nextRow.slice(2 until nextRow.size).toMutableList()))
+                        )
+                    }
+                }
+            }
+
+        }
+
+        return ast
+    }
 }
 
 class InputReader {
@@ -128,29 +153,62 @@ class InputReader {
             s = 0 + 1
         """.trimIndent()
     }
+
+    fun getSourceFromStringSimpleDouble(): String {
+        return """
+            var = 0 + 1
+            letters_ = 20 + 109 * 4
+        """.trimIndent()
+    }
 }
 
 class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parser)
 
 // AST related classes
 
-class Expression {
+class Sign() {
 
 }
 
-class Program(codeBlocks: MutableList<CodeBlock>) {
+class Term(val temp_text: String) {
+    override fun toString(): String {
+        return temp_text
+    }
+}
 
+class Expression(val term: Term, val sign: Sign?, val expr: Expression?) {
+    companion object {
+        fun getExpressionFromTokens(tokens: MutableList<Token>): Expression {
+            return Expression(Term(tokens.toString()), null, null)
+        }
+    }
+
+    override fun toString(): String {
+        return term.toString()
+    }
+}
+
+class AST(val codeBlocks: MutableList<CodeBlock>) {
+    fun addCodeBlock(codeBlock: CodeBlock) {
+        codeBlocks.add(codeBlock)
+    }
+
+    override fun toString(): String {
+        return "==== AST ====\nProgram\n\t$codeBlocks"
+    }
 }
 
 abstract class CodeBlock {
 
 }
 
-class Assignment(varName: String, expr: Expression): CodeBlock() {
-
+class Assignment(val varName: String, val expr: Expression): CodeBlock() {
+    override fun toString(): String {
+        return " |$varName = $expr| "
+    }
 }
 
-class If: CodeBlock() {
+class If(): CodeBlock() {
 
 }
 
@@ -160,9 +218,13 @@ class While: CodeBlock() {
 
 fun main() {
     val compiler = Compiler(InputReader(), Lexer(), Parser())
-    val input = compiler.inputReader.getSourceFromStringSimple()
+    val input = compiler.inputReader.getSourceFromStringSimpleDouble()
     val tokensInRows = compiler.lexer.tokenizeInRows(input)
 
 //    compiler.lexer.printTokensInRows(tokensInRows)
+
+    val ast = compiler.parser.parse(tokensInRows)
+
+    println(ast)
 
 }
