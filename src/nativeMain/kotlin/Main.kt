@@ -1,40 +1,29 @@
-//class TokenType(val value: String)
-
-enum class Token(val str: String) {
-    // Keywords
-    IF("if"),
-    WHILE("while"),
-    PRINT("print"),
-    //LET("let")
-
-    // Math Operators
-    PLUS("+"),
-    MINUS("-"),
-    MULTIPLY("*"),
-    DIVIDE("/"),
-    EXPONENT("**"),
-    MODULUS("%"),
-    FLOOR_DIVIDE("//"),
-
-    // Comparison Operators
-    EQUAL("=="),
-    NOT_EQUAL("!="),
-    GREATER(">"),
-    LESS("<"),
-    GREATER_OR_EQUAL(">="),
-    LESS_OR_EQUAL("<="),
-
-    // Logic Operators
-    AND("&&"),
-    OR("||"),
-    NOT("!"),
-
-    // Special Characters
-    L_PAREN("("),
-    R_PAREN(")"),
-    L_BRACKET("{"),
-    R_BRACKET("}"),
+open class Token(val str: String) {
+    open fun getStr(): String {
+        return str
+    }
 }
+
+class Keyword(str: String): Token(str)
+
+class MathOperation(str: String): Token(str)
+
+class ComparisonOperation(str: String): Token(str)
+
+class LogicOperation(str: String): Token(str)
+
+class SpecialCharacters(str: String): Token(str)
+
+class Variable(str: String): Token(str)
+
+class CustomInt(str: String): Token(str) {
+    private val value: Int = str.toInt()
+
+    fun getValue(): Int{
+        return value
+    }
+}
+
 
 class Lexer {
 
@@ -62,7 +51,9 @@ class Lexer {
 fun main() {
 //    val l = Lexer()
 //    l.tokenize("0 + 1 + 1")
-    val t = Token.AND
-    println(t)
-    println(t.str + t.name + t.ordinal)
+    val t = Keyword("if")
+    println(t.getStr())
+
+    val t2 = CustomInt("1")
+    println(t2.getValue())
 }
