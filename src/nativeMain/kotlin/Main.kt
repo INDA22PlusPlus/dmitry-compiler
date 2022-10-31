@@ -1,3 +1,4 @@
+// Token related classes
 open class Token(private val str: String) {
     override fun toString(): String {
         return str
@@ -21,6 +22,7 @@ class EOL(str: String): Token(str) {
         return "\\n"
     }
 }
+
 class CustomInt(str: String): Token(str) {
     private val value: Int = str.toInt()
 
@@ -29,7 +31,7 @@ class CustomInt(str: String): Token(str) {
     }
 }
 
-
+// Compiler related classes
 class Lexer {
     // TODO: Maps and filters instead of for loops
     fun tokenize(str: String): MutableList<Token> {
@@ -88,7 +90,6 @@ class Lexer {
     }
 }
 
-
 class Parser {
 
 }
@@ -99,7 +100,7 @@ class InputReader {
         return ""
     }
 
-    fun getSourceFromString(): String {
+    fun getSourceFromStringHard(): String {
         return """
             s = 0 + 1 + 2
             b = 3
@@ -121,11 +122,45 @@ class InputReader {
             }
         """.trimIndent()
     }
+
+    fun getSourceFromStringSimple(): String {
+        return """
+            s = 0 + 1
+        """.trimIndent()
+    }
 }
+
 class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parser)
+
+// AST related classes
+
+class Expression {
+
+}
+
+class Program(codeBlocks: MutableList<CodeBlock>) {
+
+}
+
+abstract class CodeBlock {
+
+}
+
+class Assignment(varName: String, expr: Expression): CodeBlock() {
+
+}
+
+class If: CodeBlock() {
+
+}
+
+class While: CodeBlock() {
+
+}
+
 fun main() {
     val compiler = Compiler(InputReader(), Lexer(), Parser())
-    val input = compiler.inputReader.getSourceFromString()
+    val input = compiler.inputReader.getSourceFromStringSimple()
     val tokensInRows = compiler.lexer.tokenizeInRows(input)
 
 //    compiler.lexer.printTokensInRows(tokensInRows)
