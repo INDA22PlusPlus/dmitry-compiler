@@ -37,10 +37,11 @@ class Lexer(fileName: String) {
 
     // TODO: Maps and filters instead of for loops
     fun tokenize(){
-        tokensInRows.map { row ->
+        tokenInRows.map { row ->
             tokens.addAll(row)
-            tokens.add(EOL("\n"))
+            tokens
         }
+        return tokens
     }
     fun tokenizeInRows() {
         // Defining all keywords, symbols etc
