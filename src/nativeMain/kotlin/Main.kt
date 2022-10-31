@@ -30,11 +30,7 @@ class CustomInt(str: String): Token(str) {
 }
 
 
-class Lexer(fileName: String) {
-    val tokens: MutableList<Token>? = null
-    val tokensInRows: MutableList<MutableList<Token>>? = null
-    val sourceCode: String? = null
-
+class Lexer {
     // TODO: Maps and filters instead of for loops
     fun tokenize(str: String): MutableList<Token> {
         val tokens = mutableListOf<Token>()
@@ -42,14 +38,6 @@ class Lexer(fileName: String) {
         return tokens
     }
     fun tokenizeInRows(str: String): MutableList<MutableList<Token>> {
-//        println(str)
-
-        val lines = str.lines()
-//        var inp = str.split("\\s+".toRegex())
-//        println(lines)
-
-        val tokens = mutableListOf<MutableList<Token>>()
-
         val keywords = listOf("if", "elif", "else", "while", "print")
 //        val mathOperators = listOf("+", "-", "*", "/", "**", "%", "//")        // Long form
         val mathOperators = listOf("+", "-", "*", "/")                           // Short form
@@ -60,6 +48,8 @@ class Lexer(fileName: String) {
 
 //        val allTokenTemplates = keywords + mathOperators + comparisonOperators + logicOperators + specialCharacters
 
+        val lines = str.lines()
+        val tokens = mutableListOf<MutableList<Token>>()
         for (line in lines) {
             val lineSplit = line.split("\\s+".toRegex())
             val row = mutableListOf<Token>()
@@ -74,51 +64,22 @@ class Lexer(fileName: String) {
                     Regex("[a-zA-Z_]+").matches(token) -> row.add(Variable(token))
                     Regex("0|[1-9][0-9]*").matches(token) -> row.add(CustomInt(token))
                 }
-//                print(token)
-//                if (token.matches("^(0|[1-9][0-9]*)\$".toRegex())) {
-//                    row.add(CustomInt(token))
-//                }
             }
             if (row.size > 0) {
-                row.add(EOL("\n"))
+//                row.add(EOL("\n"))
                 tokens.add(row)
             }
-//            println()
         }
-
-//        println(arr)
 
         return tokens
     }
 
-    fun printTokens() {
-
+    fun printTokensInRows(tokensInRows: MutableList<MutableList<Token>>) {
+        tokensInRows.map { row ->
+            row.map { token -> print("$token ") }
+            println()
+        }
     }
-
-    fun printTokensInRows() {
-
-    }
-
-    fun readFromFile() {
-
-    }
-
-    fun generateTokensFromSource() {
-
-    }
-
-    fun generateTokensInRowsFromSource() {
-
-    }
-
-    fun generateTokensFromFile() {
-
-    }
-
-    fun generateTokensInRowsFromFile() {
-
-    }
-
 }
 
 
@@ -126,17 +87,42 @@ class Parser {
 
 }
 
-class Compiler(val lexer: Lexer, val parser: Parser)
-fun main() {
-    val l = Lexer("source.dc")
-    val tokens = l.tokenizeInRows(str)
-    tokens.map { row ->
-        row.map { token -> print("$token ") }
-        println()
+class InputReader {
+    // TODO: Implement
+    fun getSourceFromFile(fileName: String): String {
+        return ""
     }
 
-    val tokens2 = l.tokenize(str)
-    print(tokens2)
+    fun getSourceFromString(): String {
+        return """
+            s = 0 + 1 + 2
+            b = 3
+            c_ = 45
+
+            if ( s > b ) {
+                print ( s )
+            } elif ( s > 4 ) {
+                print ( 5 )
+            } else {
+                print ( 6 )
+            }
+
+            while ( s < b ) {
+                if b > s {
+                    s = 7
+                }
+                s = s + 8
+            }
+        """.trimIndent()
+    }
+}
+class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parser)
+fun main() {
+    val compiler = Compiler(InputReader(), Lexer(), Parser())
+    val input = compiler.inputReader.getSourceFromString()
+    val tokensInRows = compiler.lexer.tokenizeInRows(input)
+
+    compiler.lexer.printTokensInRows(tokensInRows)
 
 //    val t = Keyword("if")
 //    println(t)
