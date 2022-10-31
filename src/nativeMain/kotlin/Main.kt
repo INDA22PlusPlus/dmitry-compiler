@@ -73,11 +73,59 @@ class Lexer {
 
         return arr
     }
+    fun tokenizeInRows(str: String): MutableList<MutableList<Token>> {
+//        println(str)
+
+        val lines = str.lines()
+//        var inp = str.split("\\s+".toRegex())
+//        println(lines)
+
+        val arr = mutableListOf<MutableList<Token>>()
+
+        val keywords = listOf("if", "elif", "else", "while", "print")
+//        val mathOperators = listOf("+", "-", "*", "/", "**", "%", "//")        // Long form
+        val mathOperators = listOf("+", "-", "*", "/")                           // Short form
+//        val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")    // Long form
+        val comparisonOperators = listOf("==", "!=", ">", "<")                  // Short form
+        val logicOperators = listOf("&&", "||", "!")
+        val specialCharacters = listOf("(", ")", "{", "}", "=")
+
+//        val allTokenTemplates = keywords + mathOperators + comparisonOperators + logicOperators + specialCharacters
+
+        for (line in lines) {
+            val lineSplit = line.split("\\s+".toRegex())
+            val row = mutableListOf<Token>()
+            for (token in lineSplit) {
+                when {
+                    keywords.contains(token) -> row.add(Keyword(token))
+                    mathOperators.contains(token) -> row.add(MathOperator(token))
+                    comparisonOperators.contains(token) -> row.add(ComparisonOperator(token))
+                    logicOperators.contains(token) -> row.add(LogicOperator(token))
+                    specialCharacters.contains(token) -> row.add(SpecialCharacter(token))
+
+                    Regex("[a-zA-Z_]+").matches(token) -> row.add(Variable(token))
+                    Regex("0|[1-9][0-9]*").matches(token) -> row.add(CustomInt(token))
+                }
+//                print(token)
+//                if (token.matches("^(0|[1-9][0-9]*)\$".toRegex())) {
+//                    row.add(CustomInt(token))
+//                }
+            }
+            if (row.size > 0) {
+                arr.add(row)
+            }
+//            println()
+        }
+
+//        println(arr)
+
+        return arr
+    }
+
 }
 
 fun main() {
-    val l = Lexer()
-    var tokens = l.tokenize("""
+    val str = """
         s = 0 + 1 + 2
         b_ = 3
         
@@ -96,9 +144,16 @@ fun main() {
             s = s + 8
         }
     """.trimIndent()
-    )
 
-    println(tokens)
+    val l = Lexer()
+    val tokens = l.tokenizeInRows(str)
+    tokens.map { row ->
+        row.map { token -> print("$token ") }
+        println()
+    }
+
+    val tokens2 = l.tokenize(str)
+    print(tokens2)
 
 //    val t = Keyword("if")
 //    println(t)
