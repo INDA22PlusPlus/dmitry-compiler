@@ -1,3 +1,5 @@
+import platform.posix.log
+
 open class Token(private val str: String) {
     override fun toString(): String {
         return str
@@ -6,13 +8,13 @@ open class Token(private val str: String) {
 
 class Keyword(str: String): Token(str)
 
-class MathOperation(str: String): Token(str)
+class MathOperator(str: String): Token(str)
 
-class ComparisonOperation(str: String): Token(str)
+class ComparisonOperator(str: String): Token(str)
 
-class LogicOperation(str: String): Token(str)
+class LogicOperator(str: String): Token(str)
 
-class SpecialCharacters(str: String): Token(str)
+class SpecialCharacter(str: String): Token(str)
 
 class Variable(str: String): Token(str)
 
@@ -28,49 +30,56 @@ class CustomInt(str: String): Token(str) {
 class Lexer {
     // TODO: Maps and filters instead of for loops
     fun tokenize(str: String): MutableList<Token> {
-        println(str)
+//        println(str)
 
         val lines = str.lines()
 //        var inp = str.split("\\s+".toRegex())
-        println(lines)
+//        println(lines)
 
         val arr = mutableListOf<Token>()
 
-        // Keywords
+        val keywords = listOf("if", "elif", "else", "while", "print")
+//        val mathOperators = listOf("+", "-", "*", "/", "**", "%", "//")        // Long form
+        val mathOperators = listOf("+", "-", "*", "/")                           // Short form
+//        val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")    // Long form
+        val comparisonOperators = listOf("==", "!=", ">", "<")                  // Short form
+        val logicOperators = listOf("&&", "||", "!")
+        val specialCharacters = listOf("(", ")", "{", "}", "=")
+
+//        val allTokenTemplates = keywords + mathOperators + comparisonOperators + logicOperators + specialCharacters
 
         for (line in lines) {
             val lineSplit = line.split("\\s+".toRegex())
             for (token in lineSplit) {
                 when {
-                    // Keywords
-                    "if" == token -> arr.add(Keyword("if"))
-                    "else" == token -> arr.add(Keyword("else"))
-                    "elif" == token -> arr.add(Keyword("elif"))
-                    "when" == token -> arr.add(Keyword("when"))
-                    "print" == token -> arr.add(Keyword("print"))
+                    keywords.contains(token) -> arr.add(Keyword(token))
+                    mathOperators.contains(token) -> arr.add(MathOperator(token))
+                    comparisonOperators.contains(token) -> arr.add(ComparisonOperator(token))
+                    logicOperators.contains(token) -> arr.add(LogicOperator(token))
+                    specialCharacters.contains(token) -> arr.add(SpecialCharacter(token))
 
-                    Regex("^(0|[1-9][0-9]*)\$").matches(token) -> arr.add(CustomInt(token))
+                    Regex("[a-zA-Z_]+").matches(token) -> arr.add(Variable(token))
+                    Regex("0|[1-9][0-9]*").matches(token) -> arr.add(CustomInt(token))
                 }
-                print(token)
-                if (token.matches("^(0|[1-9][0-9]*)\$".toRegex())) {
-                    arr.add(CustomInt(token))
-                }
+//                print(token)
+//                if (token.matches("^(0|[1-9][0-9]*)\$".toRegex())) {
+//                    arr.add(CustomInt(token))
+//                }
             }
-            println()
+//            println()
         }
 
-        println(arr)
+//        println(arr)
 
         return arr
     }
-
 }
 
 fun main() {
     val l = Lexer()
-    l.tokenize("""
+    var tokens = l.tokenize("""
         s = 0 + 1 + 2
-        b = 3
+        b_ = 3
         
         if ( s > b ) {
             print ( s )
@@ -88,6 +97,9 @@ fun main() {
         }
     """.trimIndent()
     )
+
+    println(tokens)
+
 //    val t = Keyword("if")
 //    println(t)
 //
