@@ -34,22 +34,28 @@ class Lexer {
     // TODO: Maps and filters instead of for loops
     fun tokenize(str: String): MutableList<Token> {
         val tokens = mutableListOf<Token>()
-        tokenizeInRows(str).map { row -> tokens.addAll(row) }
+        tokenizeInRows(str).map { row ->
+            tokens.addAll(row)
+            tokens.add(EOL("\n"))
+        }
         return tokens
     }
     fun tokenizeInRows(str: String): MutableList<MutableList<Token>> {
+        // Defining all keywords, symbols etc
         val keywords = listOf("if", "elif", "else", "while", "print")
-//        val mathOperators = listOf("+", "-", "*", "/", "**", "%", "//")        // Long form
-        val mathOperators = listOf("+", "-", "*", "/")                           // Short form
-//        val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")    // Long form
-        val comparisonOperators = listOf("==", "!=", ">", "<")                  // Short form
+//        val mathOperators = listOf("+", "-", "*", "/", "**", "%", "//")           // Long form
+        val mathOperators = listOf("+", "-", "*", "/")                              // Short form
+//        val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")        // Long form
+        val comparisonOperators = listOf("==", "!=", ">", "<")                      // Short form
         val logicOperators = listOf("&&", "||", "!")
         val specialCharacters = listOf("(", ")", "{", "}", "=")
 
 //        val allTokenTemplates = keywords + mathOperators + comparisonOperators + logicOperators + specialCharacters
 
-        val lines = str.lines()
         val tokens = mutableListOf<MutableList<Token>>()
+        val lines = str.lines()
+
+        // Breaking down lines into separate words and tokenizing them
         for (line in lines) {
             val lineSplit = line.split("\\s+".toRegex())
             val row = mutableListOf<Token>()
@@ -66,7 +72,7 @@ class Lexer {
                 }
             }
             if (row.size > 0) {
-//                row.add(EOL("\n"))
+//                row.add(EOL("\n"))            // Adds EOL character, currently not in use since rows are used instead
                 tokens.add(row)
             }
         }
@@ -122,11 +128,6 @@ fun main() {
     val input = compiler.inputReader.getSourceFromString()
     val tokensInRows = compiler.lexer.tokenizeInRows(input)
 
-    compiler.lexer.printTokensInRows(tokensInRows)
+//    compiler.lexer.printTokensInRows(tokensInRows)
 
-//    val t = Keyword("if")
-//    println(t)
-//
-//    val t2 = CustomInt("1")
-//    println(t2.getValue())
 }
