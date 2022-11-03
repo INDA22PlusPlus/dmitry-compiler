@@ -3,14 +3,15 @@ package Compiler
 import AST
 import Assignment
 import Print
+import Tree.Conditional
 
 // TODO: Fix this
 data class SemanticReturn(val bool: Boolean, val msg: String?)
 
 class SemanticAnalyzer {
-    fun analyze(ast: AST): SemanticReturn {
-        val varStack = hashSetOf<String?>()
-
+    fun analyze(ast: AST, varStack: HashSet<String?>): SemanticReturn {
+//        val varStack: HashSet<String?> = hashSetOf()
+//        println(ast)
         for (codeBlock in ast.codeBlocks) {
             when (codeBlock::class) {
                 Assignment::class -> {
@@ -23,8 +24,8 @@ class SemanticAnalyzer {
                         .filter { Regex("[a-zA-Z_]+").matches(it.toString())}
                         .map { id -> if (id.str !in varStack) { return SemanticReturn(false,
                             "Variable '${id.str}' referenced before assignment!" +
-                                    "\n\t Row: _ Column: _ -> ${codeBlock.reduceString()}" +
-                                    "\n\t${" ".repeat(20 + codeBlock.reduceString().indexOf(id.str ?: ""))} ^")
+                                    "\n\t Row: _ Column: _ -> $codeBlock" +
+                                    "\n\t${" ".repeat(20 + codeBlock.toString().indexOf(id.str ?: ""))} ^")
                         } }
                     varStack.add(varName)
                 }
@@ -34,9 +35,16 @@ class SemanticAnalyzer {
                     components.filter { Regex("[a-zA-Z_]+").matches(it.toString())}
                         .map { id -> if (id.str !in varStack) { return SemanticReturn(false,
                             "Variable '${id.str}' referenced before assignment!" +
-                                    "\n\t Row: _ Column: _ -> ${codeBlock.reduceString()}" +
-                                    "\n\t${" ".repeat(20 + codeBlock.reduceString().indexOf(id.str ?: ""))} ^")
+                                    "\n\t Row: _ Column: _ -> $codeBlock" +
+                                    "\n\t${" ".repeat(20 + codeBlock.toString().indexOf(" ${id.str} " ?: "") + 1)} ^")
                         } }
+                }
+                Conditional::class -> {
+                    val semRet = SemanticAnalyzer().analyze(codeBlock.getAST(), varStack)
+//                    println(semRet)
+                    if (!semRet.bool) {
+                        return semRet
+                    }
                 }
             }
         }

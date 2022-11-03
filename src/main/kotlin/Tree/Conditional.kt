@@ -63,7 +63,7 @@ class Comparison(val exprLeft: Expression, val compOp: Component, val exprRight:
 
 }
 
-open class Conditional(val condName: Component, val comp: Comparison, val codeBlocks: MutableList<CodeBlock>): CodeBlock() {
+open class Conditional(val condName: Component, val comp: Comparison, val ast: AST): CodeBlock() {
 
     companion object {
         fun getConditionalFromTokens(condStr: String, comp: Comparison, tokens: MutableList<MutableList<Token>>): Conditional {
@@ -71,7 +71,7 @@ open class Conditional(val condName: Component, val comp: Comparison, val codeBl
             val ast = Parser().parse(tokens)
             return Conditional(Component(condStr, null),
                 comp,
-                ast.codeBlocks)
+                ast)
 
 //            return when {
 //                tokens.size == 1 || tokens.size == 2 -> {
@@ -108,7 +108,9 @@ open class Conditional(val condName: Component, val comp: Comparison, val codeBl
     }
 
     override fun toString(): String {
-        return "while ( $comp ) { $codeBlocks }"
+        return "\n\t\t" +
+                "$condName ( $comp ) {\n\t\t\t" +
+                "${ast.codeBlocks.joinToString(separator = "") { "$it" }} }"
     }
 
 //    // TODO: fix this horrible stuff
@@ -120,12 +122,16 @@ open class Conditional(val condName: Component, val comp: Comparison, val codeBl
 //    }
 
     override fun reduceString(): String {
-        return "while $comp:\n\t" +
-                "${codeBlocks.joinToString(separator = "\n\t") { it.reduceString() }}"
+        return "$condName $comp:\n\t" +
+                ast.codeBlocks.joinToString(separator = "\n\t") { it.reduceString() }
     }
 
     override fun reduce(): MutableList<Component> {
         TODO("Not yet implemented")
+    }
+
+    override fun getAST(): AST {
+        return ast
     }
 
 }

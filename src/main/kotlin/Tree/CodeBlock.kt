@@ -3,7 +3,9 @@ import Node
 
 // CodeBlock based classes
 abstract class CodeBlock: Node() {
-
+    open fun getAST(): AST {
+        return AST(mutableListOf())
+    }
 }
 
 class Assignment(val varName: Component, val expr: Expression): CodeBlock() {

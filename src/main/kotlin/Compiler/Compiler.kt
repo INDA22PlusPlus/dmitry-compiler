@@ -8,7 +8,7 @@ class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parse
 
     // TODO: fix code (simple)
     fun compileFromAstToString(ast: AST): String {
-        val semReturn = semanticAnalyzer.analyze(ast)
+        val semReturn = semanticAnalyzer.analyze(ast, hashSetOf())
         if (semReturn.bool) {
             return ast.reduceString()
         }
