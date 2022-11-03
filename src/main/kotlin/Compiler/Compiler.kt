@@ -29,7 +29,7 @@ class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parse
         val input = inputReader.getSourceFromFile(source)
         val tokensInRows = lexer.tokenizeInRows(input)
 
-        return parser.parse(tokensInRows)
+        return parser.parse(tokensInRows, 1)
     }
     fun compileFromSourceToFile(source: String, target: String = "compiled.py") {
         compileFromAstToFile(getAstFromSource(source), target)

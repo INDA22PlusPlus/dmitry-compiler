@@ -63,47 +63,13 @@ class Comparison(val exprLeft: Expression, val compOp: Component, val exprRight:
 
 }
 
-open class Conditional(val condName: Component, val comp: Comparison, val ast: AST): CodeBlock() {
+open class Conditional(val condName: Component, val comp: Comparison, val ast: AST, val nested : Int): CodeBlock() {
 
     companion object {
-        fun getConditionalFromTokens(condStr: String, comp: Comparison, tokens: MutableList<MutableList<Token>>): Conditional {
-//            println("inside")
-            val ast = Parser().parse(tokens)
-            return Conditional(Component(condStr, null),
-                comp,
-                ast)
-
-//            return when {
-//                tokens.size == 1 || tokens.size == 2 -> {
-//                    Expression(Term.getTermFromTokens(tokens), null, null)
-//                }
-//                tokens.size >= 3 -> {
-//                    val firstToken = tokens.elementAt(0).toString()
-//                    val secondToken = tokens.elementAt(1).toString()
-//                    if (allowedOp.contains(secondToken)) {
-//                        Expression(Term.getTermFromTokens(
-//                            tokens.slice(0..0).toMutableList()),
-//                            Component(secondToken, null),
-//                            getExpressionFromTokens(tokens.slice(2 until tokens.size).toMutableList())
-//                        )
-//                    } else if (firstToken == "(") {
-//                        val lastIndex = tokens.withIndex()
-//                            .last { pair -> pair.value.toString() == ")" }
-//                            .index
-//                        Expression(Term.getTermFromTokens(
-//                            tokens.slice(0..lastIndex).toMutableList()),
-//                            null,
-//                            null
-//                        )
-//                    }
-//                    else {
-//                        Expression(Term.getTermFromTokens(tokens), null, null)
-//                    }
-//                }
-//                else -> {
-//                    throw Exception("Couldn't parse the expression, something wrong with the amount of tokens.")
-//                }
-//            }
+        fun getConditionalFromTokens(condStr: String, comp: Comparison, tokens: MutableList<MutableList<Token>>,
+                                     nested: Int): Conditional {
+            val ast = Parser().parse(tokens, nested + 1)
+            return Conditional(Component(condStr, null), comp, ast, nested)
         }
     }
 
@@ -122,8 +88,8 @@ open class Conditional(val condName: Component, val comp: Comparison, val ast: A
 //    }
 
     override fun reduceString(): String {
-        return "$condName $comp:\n\t" +
-                ast.codeBlocks.joinToString(separator = "\n\t") { it.reduceString() }
+        return "$condName $comp:\n" + "\t".repeat(nested) +
+                ast.codeBlocks.joinToString(separator = "\n" + "\t".repeat(nested)) { it.reduceString() }
     }
 
     override fun reduce(): MutableList<Component> {

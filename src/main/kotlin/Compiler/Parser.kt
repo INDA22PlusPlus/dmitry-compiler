@@ -9,17 +9,17 @@ import Tree.Comparison
 import Tree.Conditional
 
 class Parser {
-    fun parse(tokensInRows: MutableList<MutableList<Token>>): AST {
+    fun parse(tokensInRows: MutableList<MutableList<Token>>, nested: Int): AST {
         val ast = AST(mutableListOf())
         val tokenIterator = tokensInRows.iterator()
         while (tokenIterator.hasNext()) {
             var row = tokenIterator.next()
 //            println(row)
             when (row.elementAt(0).toString().lowercase()) {
-                "if" -> addConditional("if", tokenIterator, row, ast)
+                "if" -> addConditional("if", tokenIterator, row, ast, nested)
 //                "elif" -> {}
 //                "else" -> {}
-                "while" -> addConditional("while", tokenIterator, row, ast)
+                "while" -> addConditional("while", tokenIterator, row, ast, nested)
                 "break" -> {}
                 "print" -> addPrint(row, ast)
                 else -> addElse(row, ast)
@@ -44,7 +44,7 @@ class Parser {
     }
 
     fun addConditional(condName: String, tokenIterator: MutableIterator<MutableList<Token>>,
-                       rowOld: MutableList<Token>, ast: AST) {
+                       rowOld: MutableList<Token>, ast: AST, nested: Int) {
         var row = rowOld
         // TODO: Fix this, conditionals should also be of type Bool (or 0 and 1 int), also way to long
         if (row.size >= 7) {
@@ -56,21 +56,26 @@ class Parser {
 
                 val comp = Comparison.getComparisonFromTokens(row.slice(2 until row.size - 2).toMutableList())
 //                            print(comp)
-                val (lBrackets, rBrackets) = 1 to 0
+                var (lBrackets, rBrackets) = 1 to 0
                 val stack = mutableListOf<MutableList<Token>>()
                 while (tokenIterator.hasNext()) {
                     row = tokenIterator.next()
                     row.map { token ->
                         when (token.toString()) {
-                            "{" -> lBrackets.inc()
-                            "}" -> rBrackets.inc()
+                            "{" -> {
+                                lBrackets += 1
+                            }
+                            "}" -> {
+                                rBrackets += 1
+                            }
                             else -> {}
                         }
                     }
+//                    println("$row \t $lBrackets \t $rBrackets")
                     if (lBrackets == rBrackets) { break }
                     stack.add(row)
                 }
-                ast.addCodeBlock(Conditional.getConditionalFromTokens(condName, comp, stack))
+                ast.addCodeBlock(Conditional.getConditionalFromTokens(condName, comp, stack, nested))
             }
         } else {
             throw Exception("Conditionals should contain at least 7 elements")      // temp

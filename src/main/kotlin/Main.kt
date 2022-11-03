@@ -20,7 +20,9 @@ fun main() {
 //    println(compiler.compileFromAstToString(ast))
 
     // First case
-    compiler.compileFromSourceToString("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.dc")
-    compiler.compileFromSourceToFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.dc",
-    "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.py")
+//    compiler.compileFromSourceToFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.dc",
+//    "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.py")
+
+    compiler.compileFromSourceToFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source.dc",
+        "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source.py")
 }

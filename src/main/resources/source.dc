@@ -1,18 +1,17 @@
-s = 0 + 1 + 2
-b = 3
-c_ = 45
+a = 0
+b = 1
 
-if ( s > b ) {
-    print ( s )
-} elif ( s > 4 ) {
-    print ( 5 )
-} else {
-    print ( 6 )
-}
+num = 20
+cur = 0
+while ( cur < num ) {
+    print ( a )
+    c = a + b
+    a = b
+    b = c
 
-while ( s < b ) {
-    if b > s {
-        s = 7
+    cur = cur + 1
+
+    if ( cur < 8 ) {
+        print ( cur )
     }
-    s = s + 8
 }
