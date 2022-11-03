@@ -107,9 +107,26 @@ class Parser {
 //            println(nextRow)
             when (nextRow.elementAt(0).toString()) {
                 "if" -> {}
-                "elif" -> {}
-                "else" -> {}
-                "when" -> {}
+//                "elif" -> {}
+//                "else" -> {}
+                "while" -> {}
+                "break" -> {}
+                "print" -> {
+//                    println((nextRow.elementAt(1).toString()) +
+//                            (nextRow.last().toString()) +
+//                            (nextRow.size))
+                    if (nextRow.elementAt(1).toString() == "(" &&
+                        nextRow.last().toString() == ")" &&
+                        nextRow.size >= 4) {
+
+//                        println(2 until nextRow.size)
+                        ast.addCodeBlock(Print(
+                            Expression.getExpressionFromTokens(
+                                nextRow.slice(2 until nextRow.size - 1).toMutableList()
+                            )
+                        ))
+                    }
+                }
                 else -> {
                     if (nextRow.elementAt(1).toString() == "=" && nextRow.size >= 3) {
 
@@ -318,7 +335,7 @@ class Factor(val expr: Expression?, val factor: Factor?, val int: Component?, va
                             null
                         )
                     } else {
-                        throw Exception("A Factor consisting of two tokens should begin with a - and end with a Factor")
+                        throw Exception("A Factor consisting of two tokens should begin with a '-' and end with a Factor")
                     }
                 }
                 tokens.size >= 3 -> {
@@ -498,6 +515,22 @@ class While: CodeBlock() {
 
 }
 
+class Print(val expr: Expression): CodeBlock() {
+
+//    companion object {
+//        fun getPrintFromTokens(tokens: MutableList<Token>): Print {
+//
+//        }
+//    }
+    override fun reduce(): MutableList<Component> {
+        return mutableListOf()
+    }
+
+    override fun reduceString(): String {
+        return "print(${expr.reduceString()})"
+    }
+}
+
 fun main() {
     val compiler = Compiler(InputReader(), Lexer(), Parser(), SemanticAnalyzer())
 
@@ -513,7 +546,6 @@ fun main() {
 //    println(compiler.semanticAnalyzer.analyze(ast))
 //
 //    println(compiler.compileToString(ast))
-
     compiler.compileToFile(ast, "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\compiled1.py")
 
 //    // Second case
@@ -539,6 +571,5 @@ fun main() {
 //    println(compiler.semanticAnalyzer.analyze(ast).bool)
 
 //    println(compiler.compileToString(ast))
-
     compiler.compileToFile(ast, "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\compiled2.py")
 }
