@@ -1,3 +1,5 @@
+import java.io.File
+
 // Token related classes
 class Component(val str: String?, val value: Int?) {
     override fun toString(): String {
@@ -127,9 +129,9 @@ class Parser {
 }
 
 class InputReader {
-    // TODO: Implement
+    // TODO: Move files to resources
     fun getSourceFromFile(fileName: String): String {
-        return ""
+        return File(fileName).readText()
     }
 
     fun getSourceFromStringHard(): String {
@@ -239,15 +241,20 @@ class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parse
                val semanticAnalyzer: SemanticAnalyzer) {
 
     // TODO: fix code (simple)
-    fun compile(ast: AST) {
+    fun compileToString(ast: AST): String {
         val semReturn = semanticAnalyzer.analyze(ast)
         if (semReturn.bool) {
-            println(ast.reduceString())
+            return ast.reduceString()
         }
         else {
             throw Exception("Couldn't compile: ${semReturn.msg}")
         }
     }
+
+    fun compileToFile(ast: AST, fileName: String) {
+        File(fileName).writeText(compileToString(ast))
+    }
+
 }
 
 // AST related classes
@@ -495,16 +502,19 @@ fun main() {
     val compiler = Compiler(InputReader(), Lexer(), Parser(), SemanticAnalyzer())
 
     // First case
-    var input = compiler.inputReader.getSourceFromStringSimpleAllCases()
+    // TODO: Fix absolute path
+    var input = compiler.inputReader.getSourceFromFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source1.dc")
     var tokensInRows = compiler.lexer.tokenizeInRows(input)
 
     var ast = compiler.parser.parse(tokensInRows)
 
 //    println(ast)
-
+//
 //    println(compiler.semanticAnalyzer.analyze(ast))
+//
+//    println(compiler.compileToString(ast))
 
-    compiler.compile(ast)
+    compiler.compileToFile(ast, "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\compiled1.py")
 
 //    // Second case
 //    input = compiler.inputReader.getSourceFromStringSimpleWrong()
@@ -519,7 +529,7 @@ fun main() {
 //    compiler.compile(ast)
 
     // Third case
-    input = compiler.inputReader.getSourceFromStringHarderWrong()
+    input = compiler.inputReader.getSourceFromFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source2.dc")
     tokensInRows = compiler.lexer.tokenizeInRows(input)
 
     ast = compiler.parser.parse(tokensInRows)
@@ -528,5 +538,7 @@ fun main() {
 //
 //    println(compiler.semanticAnalyzer.analyze(ast).bool)
 
-    compiler.compile(ast)
+//    println(compiler.compileToString(ast))
+
+    compiler.compileToFile(ast, "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\compiled2.py")
 }
