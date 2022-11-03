@@ -7,8 +7,8 @@ class Lexer {
     private val keywords = listOf("if", "elif", "else", "while", "print")
     //        val mathOperators = listOf("+", "-", "*", "/", "**", "%", "//")           // Long form
     private val mathOperators = listOf("+", "-", "*", "/")                              // Short form
-    //        val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")        // Long form
-    private val comparisonOperators = listOf("==", "!=", ">", "<")                      // Short form
+            val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")        // Long form
+//    private val comparisonOperators = listOf("==", "!=", ">", "<")                      // Short form
     private val logicOperators = listOf("&&", "||", "!")
     private val specialCharacters = listOf("(", ")", "{", "}", "=")
 //        val allTokenTemplates = keywords + mathOperators + comparisonOperators + logicOperators + specialCharacters
