@@ -233,20 +233,32 @@ class SemanticAnalyzer {
         val varStack = hashSetOf<String?>()
 
         for (codeBlock in ast.codeBlocks) {
-            if (codeBlock::class == Assignment::class) {
-                val components = codeBlock.reduce()
-                val varName = components.first().str
+            when (codeBlock::class) {
+                Assignment::class -> {
+                    val components = codeBlock.reduce()
+                    val varName = components.first().str
 //                println("$components")
 
-                // TODO: implement row and column for msg, better returns?
-                components.slice(2 until components.size)
-                    .filter { Regex("[a-zA-Z_]+").matches(it.toString())}
-                    .map { id -> if (id.str !in varStack) { return SemanticReturn(false,
-                        "Variable '${id.str}' referenced before assignment!" +
-                                "\n\t Row: _ Column: _ -> ${codeBlock.reduceString()}" +
-                                "\n\t${" ".repeat(20 + codeBlock.reduceString().indexOf(id.str ?: ""))} ^")
-                    } }
-                varStack.add(varName)
+                    // TODO: implement row and column for msg, better returns?
+                    components.slice(2 until components.size)
+                        .filter { Regex("[a-zA-Z_]+").matches(it.toString())}
+                        .map { id -> if (id.str !in varStack) { return SemanticReturn(false,
+                            "Variable '${id.str}' referenced before assignment!" +
+                                    "\n\t Row: _ Column: _ -> ${codeBlock.reduceString()}" +
+                                    "\n\t${" ".repeat(20 + codeBlock.reduceString().indexOf(id.str ?: ""))} ^")
+                        } }
+                    varStack.add(varName)
+                }
+                // TODO: fix duplication code
+                Print::class -> {
+                    val components = codeBlock.reduce()
+                    components.filter { Regex("[a-zA-Z_]+").matches(it.toString())}
+                        .map { id -> if (id.str !in varStack) { return SemanticReturn(false,
+                            "Variable '${id.str}' referenced before assignment!" +
+                                    "\n\t Row: _ Column: _ -> ${codeBlock.reduceString()}" +
+                                    "\n\t${" ".repeat(20 + codeBlock.reduceString().indexOf(id.str ?: ""))} ^")
+                        } }
+                }
             }
         }
 
@@ -523,7 +535,7 @@ class Print(val expr: Expression): CodeBlock() {
 //        }
 //    }
     override fun reduce(): MutableList<Component> {
-        return mutableListOf()
+        return expr.reduce()
     }
 
     override fun reduceString(): String {
@@ -560,16 +572,16 @@ fun main() {
 //
 //    compiler.compile(ast)
 
-    // Third case
-    input = compiler.inputReader.getSourceFromFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source2.dc")
-    tokensInRows = compiler.lexer.tokenizeInRows(input)
-
-    ast = compiler.parser.parse(tokensInRows)
-
-//    println(ast)
+//    // Third case
+//    input = compiler.inputReader.getSourceFromFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source2.dc")
+//    tokensInRows = compiler.lexer.tokenizeInRows(input)
 //
-//    println(compiler.semanticAnalyzer.analyze(ast).bool)
-
-//    println(compiler.compileToString(ast))
-    compiler.compileToFile(ast, "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\compiled2.py")
+//    ast = compiler.parser.parse(tokensInRows)
+//
+////    println(ast)
+////
+////    println(compiler.semanticAnalyzer.analyze(ast).bool)
+//
+////    println(compiler.compileToString(ast))
+//    compiler.compileToFile(ast, "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\compiled2.py")
 }
