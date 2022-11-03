@@ -4,7 +4,7 @@ b = 1
 num = 20
 cur = 0
 while ( cur < num ) {
-    print ( a )
+    // print ( a + 1 )
     c = a + b
     a = b
     b = c

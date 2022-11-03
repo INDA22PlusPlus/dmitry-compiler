@@ -10,7 +10,7 @@ class Lexer {
             val comparisonOperators = listOf("==", "!=", ">", "<", ">=", "<=")        // Long form
 //    private val comparisonOperators = listOf("==", "!=", ">", "<")                      // Short form
     private val logicOperators = listOf("&&", "||", "!")
-    private val specialCharacters = listOf("(", ")", "{", "}", "=")
+    private val specialCharacters = listOf("(", ")", "{", "}", "=", "//")
 //        val allTokenTemplates = keywords + mathOperators + comparisonOperators + logicOperators + specialCharacters
 
     // TODO: Maps and filters instead of for loops
