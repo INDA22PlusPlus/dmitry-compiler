@@ -18,7 +18,7 @@ class Lexer {
         val tokens = mutableListOf<Token>()
         tokenizeInRows(str).map { row ->
             tokens.addAll(row)
-            tokens.add(EOL("\n"))
+//            tokens.add(EOL("\n"))
         }
         return tokens
     }

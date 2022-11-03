@@ -1,3 +1,5 @@
+import CodeBlock
+
 // AST related classes
 
 class Component(val str: String?, val value: Int?) {

@@ -7,7 +7,7 @@ class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parse
                val semanticAnalyzer: SemanticAnalyzer) {
 
     // TODO: fix code (simple)
-    fun compileToString(ast: AST): String {
+    fun compileFromAstToString(ast: AST): String {
         val semReturn = semanticAnalyzer.analyze(ast)
         if (semReturn.bool) {
             return ast.reduceString()
@@ -17,17 +17,22 @@ class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parse
         }
     }
 
-    fun compileFromAstToFile(ast: AST, fileName: String = "compiled.py") {
-        File(fileName).writeText(compileToString(ast))
+    fun compileFromSourceToString(source : String): String {
+        return compileFromAstToString(getAstFromSource(source))
     }
 
-    fun compileFromSourceToFile(source: String, target: String = "compiled.py") {
+    fun compileFromAstToFile(ast: AST, fileName: String = "compiled.py") {
+        File(fileName).writeText(compileFromAstToString(ast))
+    }
+
+    fun getAstFromSource(source: String): AST {
         val input = inputReader.getSourceFromFile(source)
         val tokensInRows = lexer.tokenizeInRows(input)
 
-        val ast = parser.parse(tokensInRows)
-
-        compileFromAstToFile(ast, target)
+        return parser.parse(tokensInRows)
+    }
+    fun compileFromSourceToFile(source: String, target: String = "compiled.py") {
+        compileFromAstToFile(getAstFromSource(source), target)
     }
 
     companion object {

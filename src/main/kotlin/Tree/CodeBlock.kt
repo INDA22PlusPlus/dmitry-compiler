@@ -1,3 +1,6 @@
+import Component
+import Node
+
 // CodeBlock based classes
 abstract class CodeBlock: Node() {
 
@@ -17,19 +20,6 @@ class Assignment(val varName: Component, val expr: Expression): CodeBlock() {
     }
 }
 
-class If(): CodeBlock() {
-    override fun reduce(): MutableList<Component> {
-        return mutableListOf()
-    }
-}
-
-class While: CodeBlock() {
-    override fun reduce(): MutableList<Component> {
-        return mutableListOf()
-    }
-
-}
-
 class Print(val expr: Expression): CodeBlock() {
 
     //    companion object {
@@ -43,5 +33,9 @@ class Print(val expr: Expression): CodeBlock() {
 
     override fun reduceString(): String {
         return "print(${expr.reduceString()})"
+    }
+
+    override fun toString(): String {
+        return "print ( ${expr.reduceString()} )"
     }
 }

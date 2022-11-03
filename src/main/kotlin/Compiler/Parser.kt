@@ -20,14 +20,10 @@ class Parser {
                 "while" -> {}
                 "break" -> {}
                 "print" -> {
-//                    println((nextRow.elementAt(1).toString()) +
-//                            (nextRow.last().toString()) +
-//                            (nextRow.size))
                     if (nextRow.elementAt(1).toString() == "(" &&
                         nextRow.last().toString() == ")" &&
                         nextRow.size >= 4) {
 
-//                        println(2 until nextRow.size)
                         ast.addCodeBlock(Print(
                             Expression.getExpressionFromTokens(
                                 nextRow.slice(2 until nextRow.size - 1).toMutableList()
