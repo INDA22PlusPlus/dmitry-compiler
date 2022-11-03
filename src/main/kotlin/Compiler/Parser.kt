@@ -22,7 +22,7 @@ class Parser {
                 "while" -> addConditional("while", tokenIterator, row, ast, nested)
                 "break" -> {}
                 "print" -> addPrint(row, ast)
-                "//" -> {}          // Comment
+                "//" -> {}          // Comments
                 else -> addElse(row, ast)
             }
 
