@@ -1,0 +1,13 @@
+a = 0
+b = 1
+
+num = 10
+cur = 0
+while ( cur < num ) {
+    print ( a )
+    c = a + b
+    a = b
+    b = c
+
+    cur = cur + 1
+}
