@@ -86,6 +86,10 @@ class Parser {
     fun addPrint(row: MutableList<Token>, ast: AST) {
         if (row.elementAt(1).toString() == "(" &&
             row.last().toString() == ")" &&
+            row.size == 3) {
+            ast.addCodeBlock(Print(null))
+        } else if (row.elementAt(1).toString() == "(" &&
+            row.last().toString() == ")" &&
             row.size >= 4) {
 
             ast.addCodeBlock(Print(

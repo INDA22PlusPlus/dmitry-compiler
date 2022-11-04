@@ -22,7 +22,7 @@ class Assignment(val varName: Component, val expr: Expression): CodeBlock() {
     }
 }
 
-class Print(val expr: Expression): CodeBlock() {
+class Print(val expr: Expression?): CodeBlock() {
 
     //    companion object {
 //        fun getPrintFromTokens(tokens: MutableList<Token>): Print {
@@ -30,14 +30,14 @@ class Print(val expr: Expression): CodeBlock() {
 //        }
 //    }
     override fun reduce(): MutableList<Component> {
-        return expr.reduce()
+        return expr?.let { expr.reduce() } ?: mutableListOf()
     }
 
     override fun reduceString(): String {
-        return "print(${expr.reduceString()})"
+        return "print(${expr?.let { "$expr" } ?: ""})"
     }
 
     override fun toString(): String {
-        return "print ( ${expr.reduceString()} )"
+        return "print ( ${expr?.let { "$expr" } ?: ""} )"
     }
 }

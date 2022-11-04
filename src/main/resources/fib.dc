@@ -3,6 +3,9 @@ b = 1
 
 num = 20
 cur = 0
+
+print ( )
+
 while ( cur < num ) {
     print ( a )
     c = a + b
