@@ -21,7 +21,7 @@ class Compiler(val inputReader: InputReader, val lexer: Lexer, val parser: Parse
         return compileFromAstToString(getAstFromSource(source))
     }
 
-    fun compileFromAstToFile(ast: AST, fileName: String = "compiled.py") {
+    fun compileFromAstToFile(ast: AST, fileName: String) {
         File(fileName).writeText(compileFromAstToString(ast))
     }
 

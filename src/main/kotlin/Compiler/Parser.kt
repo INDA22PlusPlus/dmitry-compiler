@@ -14,7 +14,7 @@ class Parser {
         val tokenIterator = tokensInRows.iterator()
         while (tokenIterator.hasNext()) {
             var row = tokenIterator.next()
-            println(row)
+//            println(row)
             when (row.elementAt(0).toString().lowercase()) {
                 "if" -> addConditional("if", tokenIterator, row, ast, nested)
 //                "elif" -> {}

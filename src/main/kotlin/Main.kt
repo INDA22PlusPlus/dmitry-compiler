@@ -1,8 +1,17 @@
 import Compiler.Compiler
 import Tree.Comparison
 
-fun main() {
+fun main(args: Array<String>) {
+//    println(args[0])
     val compiler = Compiler.getCompiler()
+//    println(compiler.compileFromSourceToString(args[0]))
+    compiler.compileFromSourceToFile(args[0], args[1])
+//    Runtime.getRuntime().exec("python fib.py")
+    ProcessBuilder("cmd", "/C", "python ${args[1]}")
+        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+        .start()
+        .waitFor()
+
 
 //    val comparison = Comparison.getComparisonFromTokens(compiler.lexer.tokenize("a + 3 == 3 * b"))
 //    println(comparison)
@@ -23,6 +32,6 @@ fun main() {
 //    compiler.compileFromSourceToFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.dc",
 //    "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\fib.py")
 
-    compiler.compileFromSourceToFile("C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source.dc",
-        "C:\\Users\\chiri\\IdeaProjects\\dmitryc-compiler\\src\\main\\resources\\source.py")
+//    compiler.compileFromSourceToFile(args[0], args[1])
+//    C:\Users\chiri\IdeaProjects\dmitryc-compiler\src\main\resources\fib.dc C:\Users\chiri\IdeaProjects\dmitryc-compiler\src\main\resources\fib.py
 }
